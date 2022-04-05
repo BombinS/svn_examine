@@ -1,3 +1,4 @@
+from fileinput import filename
 import os
 import subprocess
 import svncommands
@@ -13,6 +14,18 @@ def getBaseRevisionInfo(buf, examineStrDate):
                 values = list(map(str.strip, s.split('|')))
                 dict[values[0]] = [values[1], values[2]]
     return dict
+
+def splitFileNameExtention(s):
+    result = []
+    splitted = s.split('.')
+    if len(splitted) > 1:
+        extention = splitted.pop()
+        fileName = '.'.join(splitted)
+        result.append(fileName)
+        result.append(extention)
+    else:
+        result.append(s)
+    return result
 
 def parseArchive(revision, fileInfo, svnPath):
     #prepare work directory
@@ -39,24 +52,25 @@ def parseArchive(revision, fileInfo, svnPath):
                 isStart= True
                 continue
             if isStart == True:
+                lineResult = []
                 splitted = s.split('  ')
                 length = splitted[-3].strip()
                 fullFileName = splitted[-1].strip()
                 if (length != '0'):
                     splitted = fullFileName.split('/')
                     if len(splitted) == 1:
+                        lineResult.append('')
                         fileNameWithExtentsion = splitted[0]
-                        fileNameWithExtentsionSplitted = fileNameWithExtentsion.split('.')
-                        result.append(['', fileNameWithExtentsionSplitted[0],fileNameWithExtentsionSplitted[1]])
+                        for f in splitFileNameExtention(fileNameWithExtentsion):
+                            lineResult.append(f)
                     else:
                         fileNameWithExtentsion = splitted.pop()
-                        fileNameWithExtentsionSplitted = fileNameWithExtentsion.split('.')
                         filePath = '/'.join(splitted)
-                        if len(fileNameWithExtentsionSplitted) == 1:
-                            result.append([filePath, fileNameWithExtentsionSplitted[0]])
-                        else:
-                            result.append([filePath, fileNameWithExtentsionSplitted[0], fileNameWithExtentsionSplitted[1]])
-        # os.remove('./workspace/{}.{}'.format(fileInfo['fileName'], fileInfo['fileExtension']))
+                        lineResult.append(filePath)
+                        for f in splitFileNameExtention(fileNameWithExtentsion):
+                            lineResult.append(f)
+                    result.append(lineResult)
+        os.remove('./workspace/{}.{}'.format(fileInfo['fileName'], fileInfo['fileExtension']))
         return result
 
 def parseSingleFile(s):
@@ -95,20 +109,3 @@ def getListOfFiles(buf):
                 # result.append(parseSingleFile(s))
                 result.append(s)
     return result
-
-
-def main(path):
-    command = 'unzip -l {}'.format(path)
-    p = subprocess.run(command, capture_output=True, text=True)
-    buf = []
-    if p.returncode != 0:
-        print(p.stderr)
-        exit()
-    else:
-        buf = p.stdout.splitlines()
-        print(p.stdout)
-    
-
-
-if __name__ == '__main__':
-    main('workspace/LLT_MC21_FCS_ACE11L_PJ08_PC031_DOWN_RES.zip')

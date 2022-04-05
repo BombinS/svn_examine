@@ -1,6 +1,4 @@
 from asyncio.windows_events import NULL
-
-
 import pyodbc
 
 cursor = NULL
@@ -38,3 +36,35 @@ def getRevisionsForProcess(examineStrDate):
         result.append(row[0])
         row = cursor.fetchone()
     return result
+
+def addFileInfoRecord(records):
+    """ 
+    """
+    global cursor
+    for record in records:
+        sqlQueryHeaders = "([id], [revision], [filename], [extension], [mode], [path], [patharchive], [isArchive])"
+    
+        fileExtension = ''
+        if 'fileExtension' in record:
+            fileExtension = record['fileExtension']
+
+        sqlQueryValues = "('{}', '{}', '{}', '{}', '{}', '{}', '{}', '{}')".format(
+            record['UUID'], 
+            record['revision'], 
+            record['fileName'], 
+            fileExtension, 
+            record['fileAttribute'], 
+            record['filePath'], 
+            record['pathArchive'], 
+            record['isArchive'])
+
+        sqlQuery = 'insert into [dbo].[RevisionFileInfo] {} values {}'.format(sqlQueryHeaders, sqlQueryValues)
+        cursor.execute(sqlQuery)
+        cursor.commit()
+
+def markBaseRevisionProceed(rev):
+    sqlQuery = "update [dbo].[RevisionBaseInfo] set isFilesProcceed = 1 where Id = '{}'".format(rev)
+    cursor.execute(sqlQuery)
+    cursor.commit()
+
+

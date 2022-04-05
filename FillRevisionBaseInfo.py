@@ -45,11 +45,11 @@ def main():
     db = 'FCS'
     dbcommands.initDb(dbserver, db)
 
-    startDate = '2022-04-01'
-    endDate   = '2022-04-01' 
+    startDate = '2022-01-01'
+    endDate   = '2022-04-06' 
     
     # main thread
-    fillRevisionBaseInfo(svnPath, startDate, endDate, db)
+    fillRevisionBaseInfo(svnPath, startDate, endDate)
 
 if __name__ == '__main__':
     main()
