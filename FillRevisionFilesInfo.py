@@ -7,6 +7,7 @@ import svncommands
 import parsers
 import dbcommands
 import FillRevisionFileInfo
+import config
 
 def fillRevisionFilesInfo(startDate, endDate, svnPath):
 
@@ -31,18 +32,10 @@ def fillRevisionFilesInfo(startDate, endDate, svnPath):
 
 def main():
     
-    # config
-    svnPath = 'svn://172.20.1.17/ksu_mc21'
-
-    dbserver = 'DESKTOP-V1FKJG7\SQLEXPRESS'    
-    db = 'FCS'
-    dbcommands.initDb(dbserver, db)
-
-    startDate = '2022-01-01'
-    endDate   = '2022-04-06' 
+    dbcommands.initDb(config.dbserver, config.db)
     
     # main thread
-    fillRevisionFilesInfo(startDate, endDate, svnPath)
+    fillRevisionFilesInfo(config.startDate, config.endDate, config.svnPath)
 
 if __name__ == '__main__':
     main()

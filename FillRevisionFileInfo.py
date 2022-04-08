@@ -1,3 +1,5 @@
+import uuid
+
 import svncommands
 import parsers
 import dbcommands
