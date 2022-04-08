@@ -1,14 +1,13 @@
 import subprocess
 import datetime
+from tracemalloc import start
 
+import config
 import svncommands
 import parsers
 import dbcommands
 
 def fillRevisionBaseInfo(svnPath, startDate, endDate):
-
-    # # global instance - cursor to db
-    # cursor = getDbCursor(db)
 
     startDateFormat = datetime.datetime.strptime(startDate,'%Y-%m-%d')
     endDateFormat   = datetime.datetime.strptime(endDate,'%Y-%m-%d')
@@ -38,18 +37,10 @@ def fillRevisionBaseInfo(svnPath, startDate, endDate):
 
 def main():
 
-    # config
-    svnPath = 'svn://172.20.1.17/ksu_mc21'
-
-    dbserver = 'DESKTOP-V1FKJG7\SQLEXPRESS'    
-    db = 'FCS'
-    dbcommands.initDb(dbserver, db)
-
-    startDate = '2022-01-01'
-    endDate   = '2022-04-06' 
+    dbcommands.initDb(config.dbserver, config.db)
     
     # main thread
-    fillRevisionBaseInfo(svnPath, startDate, endDate)
+    fillRevisionBaseInfo(config.svnPath, config.startDate, config.endDate)
 
 if __name__ == '__main__':
     main()
