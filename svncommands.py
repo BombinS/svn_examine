@@ -1,5 +1,6 @@
 import datetime
 import subprocess
+import logging
 
 def commandGetRevisionsByDate(svnPath, date):
     """ Return the svn command for getting the list of commits to repo for some day 
@@ -30,7 +31,7 @@ def commandExportArchive(revision, svnPath, filePath, fileName, fileExtension):
 def execute(command):
     p = subprocess.run(command, capture_output=True, text=True)
     if (p.returncode != 0):
-        print(p.stderr)
+        logging.error(p.stderr)
         return
     else:
         return p.stdout.splitlines()

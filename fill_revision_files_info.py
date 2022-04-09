@@ -1,13 +1,10 @@
-import subprocess
 import datetime
-import os
-import uuid
+import logging
 
-import svncommands
-import parsers
+
 import dbcommands
-import FillRevisionFileInfo
 import config
+from fill_revision_file_info import FillRevisionFileInfo  
 
 def fillRevisionFilesInfo(startDate, endDate, svnPath):
 
@@ -15,7 +12,7 @@ def fillRevisionFilesInfo(startDate, endDate, svnPath):
     endDateFormat   = datetime.datetime.strptime(endDate,'%Y-%m-%d')
 
     while startDateFormat <= endDateFormat:
-
+    
         examineStrDate = datetime.datetime.strftime(startDateFormat,'%Y-%m-%d')
 
         # get revisions for one day
@@ -23,7 +20,7 @@ def fillRevisionFilesInfo(startDate, endDate, svnPath):
 
         # get info about all files affected by each revison
         for r in revisionsForProcess:
-            FillRevisionFileInfo.FillRevisionFileInfo(r, svnPath)
+            FillRevisionFileInfo(r, svnPath)
     
         # iterate to next day
         startDateFormat += datetime.timedelta(days=1)
@@ -32,10 +29,15 @@ def fillRevisionFilesInfo(startDate, endDate, svnPath):
 
 def main():
     
+    # init logging
+    logging.basicConfig(filename='errros.log', encoding='utf-8', level=logging.DEBUG)
+
+    # init db
     dbcommands.initDb(config.dbserver, config.db)
-    
+
     # main thread
     fillRevisionFilesInfo(config.startDate, config.endDate, config.svnPath)
+
 
 if __name__ == '__main__':
     main()

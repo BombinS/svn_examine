@@ -2,6 +2,7 @@ from fileinput import filename
 import os
 import subprocess
 import svncommands
+import logging
 
 def getBaseRevisionInfo(buf, examineStrDate):
     """
@@ -28,6 +29,7 @@ def splitFileNameExtention(s):
     return result
 
 def parseArchive(revision, fileInfo, svnPath):
+
     #prepare work directory
     if not os.path.isdir('./workspace'):
         os.makedirs('./workspace')
@@ -40,7 +42,7 @@ def parseArchive(revision, fileInfo, svnPath):
     osCommand = "unzip -l './workspace/{}.{}'".format(fileInfo['fileName'], fileInfo['fileExtension'])
     p = subprocess.run(osCommand, capture_output=True, text=True)
     if p.returncode != 0:
-        print(p.stderr)
+        logging.error(p.stderr)
         return []
     else:
         result = []

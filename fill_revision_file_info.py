@@ -1,8 +1,12 @@
+from distutils.command.config import config
 import uuid
+import logging
 
 import svncommands
 import parsers
 import dbcommands
+import config
+
 
 validArch = ['zip','rar']
 
@@ -50,9 +54,10 @@ def FillRevisionFileInfo(r, svnPath):
 
     # mark revison as processed
     dbcommands.markBaseRevisionProceed(r)
-    print('{} - done'.format(r))
 
     return
 
 if __name__ == '__main__':
-    FillRevisionFileInfo()
+    # debug
+    logging.basicConfig(filename='example.log', encoding='utf-8', level=logging.DEBUG)
+    FillRevisionFileInfo("r25414", config.svnPath)
