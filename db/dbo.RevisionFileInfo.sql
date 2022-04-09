@@ -12,8 +12,8 @@ CREATE TABLE [dbo].[RevisionFileInfo](
 	[id] [uniqueidentifier] NOT NULL,
 	[revision] [nvarchar](50) NOT NULL,
 	[filename] [nvarchar](255) NOT NULL,
-	[extension] [nchar](10) NULL,
-	[mode] [nchar](7) NULL,
+	[extension] [nvarchar](10) NULL,
+	[mode] [nvarchar](7) NULL,
 	[path] [nvarchar](255) NULL,
 	[patharchive] [nvarchar](255) NULL,
 	[isArchive] [bit] NULL
